@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,9 +13,37 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Copyright from './Copyright'
 import useStyles from './Styles'
+import axios from 'axios';
 
 export default function SignIn() {
   const classes = useStyles();
+
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null); 
+  const [res, setRest] = useState(null); 
+  
+  const handleOnChangeEmail = (e) => {
+    console.log(e)
+    setEmail(e.target.value);
+  }
+
+  const handleOnChangePassword = (e) => {
+    console.log(e)
+    setPassword(e.target.value);
+  }
+
+  const sign = async () => {
+    console.log(email)
+    await axios.post('http://localhost:9090/login', {
+      email,
+      password,
+    })
+    .then(response => {
+      console.log(JSON.stringify(response))
+      setRest(response.data.id);
+    })
+    console.log(res);
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -38,6 +66,7 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            onChange={handleOnChangeEmail}
           />
           <TextField
             variant="outlined"
@@ -49,20 +78,24 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleOnChangePassword}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
+          <Link to="/Home/1">
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={sign}
+            >
+              Sign In
+            </Button>
+          </Link>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
